@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubber & PVC Industry Blog | Tips, Guides & Insights | Shine Masters Industries</title>
+<meta name="description" content="Practical guides and expert insights on rubber profiles, PVC extrusion, bus body manufacturing, container sealing, and industrial procurement — from Shine Masters Industries.">
+<meta name="keywords" content="industrial rubber blog, PVC profile manufacturing, bus body fabrication India, container sealing, automotive rubber components, B2B procurement guide">
+<link rel="canonical" href="https://shinemastersind23-del.github.io/shinemasters-in/blog.html">
+<meta property="og:title" content="Rubber & PVC Industry Blog | Shine Masters Industries">
+<meta property="og:description" content="Practical guides on rubber profiles, PVC extrusion, bus body manufacturing, container sealing, and B2B procurement.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --void:#020408; --deep:#040c14; --navy:#061020; --electric:#00d4ff; --plasma:#0066ff; --gold:#f5c842; --white:#e8f4ff; --muted:#4a6080; --border:rgba(0,212,255,0.12); }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--void);color:var(--white);overflow-x:hidden;cursor:none;}
+.cursor-dot{width:6px;height:6px;background:var(--electric);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+.cursor-ring{width:36px;height:36px;border:1px solid rgba(0,212,255,0.5);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:all 0.15s;}
+#bg-canvas{position:fixed;inset:0;z-index:0;opacity:0.4;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(2,4,8,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo img{height:38px;}
+.nav-logo-text{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--white);line-height:1.2;}
+.nav-logo-text span{color:var(--electric);display:block;font-size:10px;letter-spacing:0.3em;font-weight:400;}
+.nav-back{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:0.05em;transition:color 0.3s;}
+.nav-back:hover{color:var(--electric);}
+
+/* HERO */
+.blog-hero{position:relative;z-index:10;padding:140px 8% 80px;border-bottom:1px solid var(--border);}
+.eyebrow{font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--electric);margin-bottom:20px;font-weight:600;}
+.blog-hero h1{font-family:'Syne',sans-serif;font-size:clamp(40px,6vw,72px);font-weight:800;line-height:1.0;letter-spacing:-0.02em;margin-bottom:24px;}
+.blog-hero h1 span{background:linear-gradient(90deg,var(--electric),var(--plasma));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.blog-hero p{font-size:16px;color:var(--muted);max-width:560px;line-height:1.7;}
+
+/* FILTER */
+.filter-bar{position:relative;z-index:10;padding:40px 8%;display:flex;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.filter-btn{padding:10px 20px;border:1px solid var(--border);border-radius:2px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:transparent;cursor:pointer;transition:all 0.3s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--electric);color:var(--electric);background:rgba(0,212,255,0.05);}
+
+/* FEATURED */
+.blog-body{position:relative;z-index:10;padding:80px 8%;}
+.featured-article{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;padding:60px;border:1px solid var(--border);border-radius:4px;background:rgba(0,212,255,0.02);margin-bottom:60px;text-decoration:none;color:inherit;transition:border-color 0.3s;}
+.featured-article:hover{border-color:rgba(0,212,255,0.35);}
+.featured-img{height:280px;border-radius:2px;background:linear-gradient(135deg,var(--navy),rgba(0,100,255,0.2));display:flex;align-items:center;justify-content:center;font-size:80px;border:1px solid var(--border);}
+.featured-tag{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--electric);margin-bottom:12px;}
+.featured-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.2;margin-bottom:16px;letter-spacing:-0.01em;}
+.featured-desc{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.featured-meta{display:flex;gap:20px;font-size:12px;color:var(--muted);}
+.featured-badge{display:inline-block;padding:4px 12px;background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.3);border-radius:2px;font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+
+/* GRID */
+.articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.article-card{border:1px solid var(--border);border-radius:4px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:all 0.3s;background:rgba(0,212,255,0.01);}
+.article-card:hover{border-color:rgba(0,212,255,0.35);transform:translateY(-4px);}
+.card-img{height:160px;background:linear-gradient(135deg,var(--navy),var(--deep));display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:1px solid var(--border);}
+.card-body{padding:28px;}
+.card-tag{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--electric);margin-bottom:12px;}
+.card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;line-height:1.3;margin-bottom:10px;}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.card-meta{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);}
+.read-time{background:rgba(0,212,255,0.06);padding:3px 8px;border-radius:2px;color:var(--electric);}
+
+/* NEWSLETTER */
+.newsletter{position:relative;z-index:10;padding:0 8% 80px;}
+.newsletter-inner{border:1px solid var(--border);border-radius:4px;padding:56px;background:linear-gradient(135deg,rgba(0,100,255,0.06),rgba(0,212,255,0.03));display:flex;align-items:center;gap:60px;flex-wrap:wrap;}
+.newsletter-text h3{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:10px;}
+.newsletter-text p{font-size:15px;color:var(--muted);line-height:1.6;max-width:400px;}
+.newsletter-form{display:flex;gap:12px;flex:1;min-width:280px;}
+.newsletter-input{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:2px;padding:14px 18px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.3s;}
+.newsletter-input:focus{border-color:var(--electric);}
+.newsletter-input::placeholder{color:var(--muted);}
+.btn-primary{padding:14px 28px;background:var(--electric);color:var(--void);border:none;border-radius:2px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;white-space:nowrap;}
+.btn-primary:hover{background:#fff;}
+
+/* TOPICS */
+.topics-section{position:relative;z-index:10;padding:0 8% 80px;}
+.section-label{font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--electric);margin-bottom:20px;font-weight:600;}
+.section-heading{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:40px;}
+.topics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.topic-chip{padding:20px 24px;border:1px solid var(--border);border-radius:4px;text-decoration:none;color:inherit;transition:all 0.3s;background:rgba(0,212,255,0.01);}
+.topic-chip:hover{border-color:rgba(0,212,255,0.35);background:rgba(0,212,255,0.05);}
+.topic-icon{font-size:24px;margin-bottom:10px;}
+.topic-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+.topic-count{font-size:12px;color:var(--muted);}
+
+footer{position:relative;z-index:10;padding:40px 8%;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+footer span{font-size:12px;color:var(--muted);}
+footer a{font-size:12px;color:var(--electric);text-decoration:none;}
+
+@media(max-width:900px){.featured-article{grid-template-columns:1fr;gap:32px;padding:32px;}.articles-grid{grid-template-columns:1fr;}.topics-grid{grid-template-columns:1fr 1fr;}.newsletter-inner{flex-direction:column;gap:32px;padding:36px;}.newsletter-form{flex-direction:column;}}
+@media(max-width:600px){.articles-grid{grid-template-columns:1fr;}.topics-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a href="/shinemasters-in/index.html" class="nav-logo">
+    <img src="https://i.ibb.co/5hyxn26G/50212-666-375.png" alt="SMI">
+    <div class="nav-logo-text">Shine Masters<span>Industries</span></div>
+  </a>
+  <a href="/shinemasters-in/index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="blog-hero">
+  <div class="eyebrow">SMI Knowledge Hub</div>
+  <h1>SMI <span>Industry Blog</span></h1>
+  <p>Plain-English guides on rubber profiles, PVC extrusion, bus body building, container seals, and smart procurement — written for buyers, engineers, and fleet managers across India.</p>
+</div>
+
+<!-- FILTER -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterArticles('all', this)">All Topics</button>
+  <button class="filter-btn" onclick="filterArticles('bus-body', this)">Bus Body</button>
+  <button class="filter-btn" onclick="filterArticles('container', this)">Container Logistics</button>
+  <button class="filter-btn" onclick="filterArticles('procurement', this)">Procurement</button>
+  <button class="filter-btn" onclick="filterArticles('rubber', this)">Rubber & PVC</button>
+  <button class="filter-btn" onclick="filterArticles('automotive', this)">Automotive</button>
+  <button class="filter-btn" onclick="filterArticles('ev', this)">EV & Future</button>
+</div>
+
+<!-- ARTICLES -->
+<div class="blog-body">
+
+  <!-- FEATURED -->
+  <a href="/shinemasters-in/blog-article-1.html" class="featured-article">
+    <div class="featured-img">🚌</div>
+    <div>
+      <div class="featured-badge">⭐ Featured Article</div>
+      <div class="featured-tag">Bus Body Manufacturing</div>
+      <div class="featured-title">Why Co-Extrusion Profiles Are Replacing Traditional Seals in Modern Bus Designs</div>
+      <p class="featured-desc">An in-depth technical and commercial analysis of how multi-material co-extrusion technology is transforming commercial vehicle body construction across India — and what it means for procurement teams.</p>
+      <div class="featured-meta">
+        <span>January 2026</span>
+        <span>·</span>
+        <span>5 min read</span>
+        <span>·</span>
+        <span>Bus Body</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- ARTICLES GRID -->
+  <div class="articles-grid" id="articlesGrid">
+
+    <a href="/shinemasters-in/blog-article-2.html" class="article-card" data-category="container">
+      <div class="card-img">📦</div>
+      <div class="card-body">
+        <div class="card-tag">Container Logistics</div>
+        <div class="card-title">The Hidden Cost of Poor Container Seals — And How to Fix It</div>
+        <div class="card-desc">Cargo damage from failing seals costs the logistics industry billions. Here's what procurement managers need to know before their next container seal order.</div>
+        <div class="card-meta"><span>Feb 2026</span><span class="read-time">4 min</span></div>
+      </div>
+    </a>
+
+    <a href="/shinemasters-in/blog-article-3.html" class="article-card" data-category="procurement">
+      <div class="card-img">🏭</div>
+      <div class="card-body">
+        <div class="card-tag">Procurement Strategy</div>
+        <div class="card-title">How to Evaluate Industrial Rubber Suppliers: A 7-Point B2B Checklist</div>
+        <div class="card-desc">Not all rubber profile suppliers are equal. Use this framework to select partners who deliver quality, consistency, and volume capability at scale.</div>
+        <div class="card-meta"><span>Feb 2026</span><span class="read-time">6 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-4.html" class="article-card" data-category="rubber">
+      <div class="card-img">🔩</div>
+      <div class="card-body">
+        <div class="card-tag">Rubber & PVC</div>
+        <div class="card-title">EPDM vs Neoprene vs Silicone: Choosing the Right Rubber for Your Application</div>
+        <div class="card-desc">A practical guide to rubber compound selection for industrial sealing and automotive applications — covering temperature, chemical resistance, and cost trade-offs.</div>
+        <div class="card-meta"><span>Jan 2026</span><span class="read-time">7 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-5.html" class="article-card" data-category="automotive">
+      <div class="card-img">🚗</div>
+      <div class="card-body">
+        <div class="card-tag">Automotive</div>
+        <div class="card-title">Glass Run Channels Explained: Why They Matter More Than You Think</div>
+        <div class="card-desc">A detailed look at the engineering behind automotive glass run channels — how they work, why they fail, and how to specify the right replacement or OEM solution.</div>
+        <div class="card-meta"><span>Dec 2025</span><span class="read-time">5 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-6.html" class="article-card" data-category="ev">
+      <div class="card-img">⚡</div>
+      <div class="card-body">
+        <div class="card-tag">EV & Future Tech</div>
+        <div class="card-title">What the EV Revolution Means for India's Industrial Rubber Sector</div>
+        <div class="card-desc">As electric 3 and 4 wheelers scale up in India, the rubber and PVC component supply chain must evolve. Here's what manufacturers need to prepare for now.</div>
+        <div class="card-meta"><span>Jan 2026</span><span class="read-time">5 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-7.html" class="article-card" data-category="bus-body">
+      <div class="card-img">🛡️</div>
+      <div class="card-body">
+        <div class="card-tag">Bus Body</div>
+        <div class="card-title">AIS-052 Compliance and What It Means for Bus Body Profile Specifications</div>
+        <div class="card-desc">India's bus body building standards (AIS-052) have significant implications for material and profile specifications. Here's what body builders and procurement teams need to know.</div>
+        <div class="card-meta"><span>Dec 2025</span><span class="read-time">6 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-8.html" class="article-card" data-category="procurement">
+      <div class="card-img">📊</div>
+      <div class="card-body">
+        <div class="card-tag">Procurement Strategy</div>
+        <div class="card-title">Single-Source vs Multi-Supplier: The Real Trade-off for Industrial Component Buyers</div>
+        <div class="card-desc">Should you consolidate your rubber and PVC profile sourcing with one strategic partner, or spread risk across multiple vendors? A data-driven analysis.</div>
+        <div class="card-meta"><span>Nov 2025</span><span class="read-time">5 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-9.html" class="article-card" data-category="rubber">
+      <div class="card-img">🧪</div>
+      <div class="card-body">
+        <div class="card-tag">Rubber & PVC</div>
+        <div class="card-title">Understanding Compression Set: The Property That Determines Seal Longevity</div>
+        <div class="card-desc">Compression set is the single most important mechanical property for sealing applications — and the most commonly misunderstood. Here's a plain-English explanation.</div>
+        <div class="card-meta"><span>Nov 2025</span><span class="read-time">4 min</span></div>
+      </div>
+    </a>
+
+    <a href="blog-article-10.html" class="article-card" data-category="container">
+      <div class="card-img">🌊</div>
+      <div class="card-body">
+        <div class="card-tag">Container Logistics</div>
+        <div class="card-title">Reefer Container Seals: Why Cold Chain Integrity Starts at the Door Gasket</div>
+        <div class="card-desc">Temperature excursions in reefer containers are often traced back to seal failure. Here's what to specify and what to inspect in your refrigerated container fleet.</div>
+        <div class="card-meta"><span>Oct 2025</span><span class="read-time">5 min</span></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="newsletter-inner">
+    <div class="newsletter-text">
+      <h3>Stay Ahead of the Industry</h3>
+      <p>Get new articles on rubber technology, procurement strategy, and industrial manufacturing delivered to your inbox monthly. No spam. Unsubscribe anytime.</p>
+    </div>
+    <div class="newsletter-form">
+      <input class="newsletter-input" type="email" placeholder="your@email.com" id="nlEmail">
+      <button class="btn-primary" onclick="subscribeNewsletter()">Subscribe →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPICS -->
+<div class="topics-section">
+  <div class="section-label">Browse by Topic</div>
+  <div class="section-heading">Explore the Knowledge Hub</div>
+  <div class="topics-grid">
+    <a href="#" onclick="filterArticles('bus-body', null); return false;" class="topic-chip">
+      <div class="topic-icon">🚌</div>
+      <div class="topic-name">Bus Body</div>
+      <div class="topic-count">2 articles</div>
+    </a>
+    <a href="#" onclick="filterArticles('container', null); return false;" class="topic-chip">
+      <div class="topic-icon">📦</div>
+      <div class="topic-name">Container Logistics</div>
+      <div class="topic-count">2 articles</div>
+    </a>
+    <a href="#" onclick="filterArticles('procurement', null); return false;" class="topic-chip">
+      <div class="topic-icon">📊</div>
+      <div class="topic-name">Procurement</div>
+      <div class="topic-count">2 articles</div>
+    </a>
+    <a href="#" onclick="filterArticles('rubber', null); return false;" class="topic-chip">
+      <div class="topic-icon">🔩</div>
+      <div class="topic-name">Rubber & PVC</div>
+      <div class="topic-count">2 articles</div>
+    </a>
+    <a href="#" onclick="filterArticles('automotive', null); return false;" class="topic-chip">
+      <div class="topic-icon">🚗</div>
+      <div class="topic-name">Automotive</div>
+      <div class="topic-count">1 article</div>
+    </a>
+    <a href="#" onclick="filterArticles('ev', null); return false;" class="topic-chip">
+      <div class="topic-icon">⚡</div>
+      <div class="topic-name">EV & Future Tech</div>
+      <div class="topic-count">1 article</div>
+    </a>
+    <a href="/shinemasters-in/index.html#products" class="topic-chip">
+      <div class="topic-icon">🧱</div>
+      <div class="topic-name">All Products</div>
+      <div class="topic-count">8 categories</div>
+    </a>
+    <a href="/shinemasters-in/index.html#contact" class="topic-chip">
+      <div class="topic-icon">📩</div>
+      <div class="topic-name">Get a Quote</div>
+      <div class="topic-count">Talk to us</div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Shine Masters Industries — Precision. Performance. Reliability.</span>
+  <a href="/shinemasters-in/index.html">← Back to Home</a>
+</footer>
+
+<script>
+// Cursor
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX+'px'; dot.style.top = e.clientY+'px';
+  ring.style.left = e.clientX+'px'; ring.style.top = e.clientY+'px';
+});
+
+// Canvas
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const orbs = Array.from({length:4}, (_,i) => ({x:Math.random()*1920,y:Math.random()*1080,r:150+Math.random()*200,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.2,hue:[200,210,220,200][i],alpha:0.04+Math.random()*0.04}));
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  orbs.forEach(o=>{o.x+=o.vx;o.y+=o.vy;if(o.x<-o.r)o.x=W+o.r;if(o.x>W+o.r)o.x=-o.r;if(o.y<-o.r)o.y=H+o.r;if(o.y>H+o.r)o.y=-o.r;const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,`hsla(${o.hue},100%,60%,${o.alpha})`);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fill();});
+  requestAnimationFrame(draw);
+}
+draw();
+
+// Filter
+function filterArticles(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const cards = document.querySelectorAll('.article-card');
+  cards.forEach(card => {
+    if (cat === 'all' || card.dataset.category === cat) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// Newsletter
+function subscribeNewsletter() {
+  const email = document.getElementById('nlEmail').value.trim();
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { alert('Please enter a valid email.'); return; }
+  alert(`Thank you! You're now subscribed with ${email}. Connect this to your CRM or email platform in production.`);
+  document.getElementById('nlEmail').value = '';
+}
+</script>
+</body>
+</html>

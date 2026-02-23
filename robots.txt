@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /smi-portal-9k2m.html
+Disallow: /_posts/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /smi-portal-9k2m.html
+Disallow: /_posts/
+
+Sitemap: https://shinemastersind23-del.github.io/shinemasters-in/sitemap.xml

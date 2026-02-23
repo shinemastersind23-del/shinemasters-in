@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<title>SMI Portal</title>
+<!-- No social meta tags, no OG tags, nothing to identify this page -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #020408; --deep: #040c14; --navy: #061020;
+  --electric: #00d4ff; --plasma: #0066ff; --gold: #f5c842;
+  --white: #e8f4ff; --muted: #4a6080; --border: rgba(0,212,255,0.15);
+  --success: #00ff88; --error: #ff4466; --warn: #ffaa00;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--void); color: var(--white); min-height: 100vh; }
+
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ── LOCKOUT SCREEN ── */
+#lockoutScreen {
+  align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,68,102,0.08), transparent 70%);
+}
+.lockout-box {
+  text-align: center; padding: 56px 48px; max-width: 400px;
+  border: 1px solid rgba(255,68,102,0.3); border-radius: 8px;
+  background: rgba(4,12,20,0.9); margin: 20px;
+}
+.lockout-icon { font-size: 48px; margin-bottom: 20px; }
+.lockout-box h2 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--error); margin-bottom: 12px; }
+.lockout-box p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+.lockout-timer { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: var(--warn); margin-bottom: 8px; }
+.lockout-timer-label { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ── LOGIN ── */
+#loginScreen {
+  align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 30% 20%, rgba(0,100,255,0.1), transparent 60%),
+              radial-gradient(ellipse at 70% 80%, rgba(0,212,255,0.07), transparent 60%);
+}
+.login-box {
+  width: 100%; max-width: 440px; padding: 52px 44px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: rgba(4,12,20,0.85); backdrop-filter: blur(20px);
+  margin: 20px;
+}
+.login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+.login-logo img { height: 34px; }
+.login-logo-text { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.3; }
+.login-logo-text span { color: var(--electric); display: block; font-size: 10px; letter-spacing: 0.25em; font-weight: 400; }
+.login-box h2 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.login-box .sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; line-height: 1.5; }
+
+.attempt-bar {
+  display: flex; gap: 6px; margin-bottom: 24px;
+}
+.attempt-dot {
+  width: 28px; height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,0.1); transition: background 0.3s;
+}
+.attempt-dot.used { background: var(--error); }
+.attempt-dot.warn { background: var(--warn); }
+
+.field-group { margin-bottom: 18px; }
+.field-group label { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+.field-group input {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 4px; padding: 13px 16px; color: var(--white);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+  transition: border-color 0.3s;
+}
+.field-group input:focus { border-color: var(--electric); }
+.field-group input::placeholder { color: var(--muted); }
+.field-group input.err { border-color: var(--error); }
+
+.pin-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 4px; }
+.pin-digit {
+  width: 52px; height: 60px; text-align: center; font-size: 24px; font-weight: 700;
+  font-family: 'Syne', sans-serif; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 4px; color: var(--white);
+  outline: none; transition: border-color 0.3s; caret-color: var(--electric);
+}
+.pin-digit:focus { border-color: var(--electric); }
+
+.btn { width: 100%; padding: 14px; border: none; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 6px; }
+.btn-primary { background: var(--electric); color: var(--void); }
+.btn-primary:hover { background: #fff; transform: translateY(-1px); }
+.btn-primary:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+.error-msg {
+  background: rgba(255,68,102,0.08); border: 1px solid rgba(255,68,102,0.25);
+  border-radius: 4px; padding: 12px 16px; font-size: 13px; color: var(--error);
+  margin-bottom: 16px; display: none; line-height: 1.5;
+}
+.error-msg.show { display: block; }
+.info-msg {
+  background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 4px; padding: 12px 16px; font-size: 12px; color: var(--muted);
+  margin-top: 16px; line-height: 1.6;
+}
+.setup-toggle { font-size: 12px; color: var(--electric); cursor: pointer; text-align: center; margin-top: 14px; }
+.setup-toggle:hover { text-decoration: underline; }
+.setup-box { background: rgba(0,212,255,0.04); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin-top: 16px; display: none; }
+.setup-box.open { display: block; }
+.setup-step { display: flex; gap: 10px; padding: 8px 0; font-size: 12px; color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.05); line-height: 1.5; }
+.setup-step:last-child { border-bottom: none; }
+.sn { color: var(--electric); font-weight: 700; flex-shrink: 0; font-family: 'Syne', sans-serif; }
+
+/* ── DASHBOARD ── */
+#dashScreen { flex-direction: column; }
+.topbar {
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; border-bottom: 1px solid var(--border);
+  background: rgba(4,12,20,0.95); backdrop-filter: blur(20px);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-left img { height: 28px; }
+.topbar-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.topbar-title span { color: var(--electric); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-user { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+.t-btn { padding: 8px 18px; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; border: none; }
+.t-new { background: var(--electric); color: var(--void); }
+.t-new:hover { background: #fff; }
+.t-logout { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.t-logout:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+.dash-body { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 264px; flex-shrink: 0; border-right: 1px solid var(--border); padding: 28px 20px; background: rgba(4,12,20,0.6); overflow-y: auto; }
+.sidebar-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; font-weight: 600; }
+.article-list { display: flex; flex-direction: column; gap: 6px; }
+.art-item { padding: 14px 16px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.2s; background: rgba(0,212,255,0.01); }
+.art-item:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.04); }
+.art-item.active { border-color: var(--electric); background: rgba(0,212,255,0.08); }
+.art-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.3; }
+.art-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.art-tag { padding: 2px 8px; border-radius: 2px; background: rgba(0,212,255,0.1); color: var(--electric); font-size: 10px; letter-spacing: 0.06em; }
+.art-date { font-size: 11px; color: var(--muted); }
+.empty-list { text-align: center; padding: 40px 16px; }
+.empty-list .ei { font-size: 28px; margin-bottom: 10px; }
+.empty-list p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+.main-panel { flex: 1; padding: 40px 44px; overflow-y: auto; max-height: calc(100vh - 64px); }
+
+/* ── WELCOME ── */
+.welcome-view h2 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.welcome-view h2 span { background: linear-gradient(90deg,var(--electric),var(--plasma)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.welcome-view .wsub { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 560px; }
+.stats-row { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+.stat-box { flex: 1; min-width: 120px; padding: 20px 24px; border: 1px solid var(--border); border-radius: 4px; background: rgba(0,212,255,0.02); }
+.stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--electric); }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+.quick-links { display: flex; flex-direction: column; gap: 10px; max-width: 560px; }
+.ql { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.3s; background: rgba(0,212,255,0.01); text-decoration: none; color: inherit; }
+.ql:hover { border-color: rgba(0,212,255,0.3); transform: translateX(4px); background: rgba(0,212,255,0.04); }
+.ql-icon { font-size: 20px; }
+.ql-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+.ql-text span { font-size: 12px; color: var(--muted); }
+.ql-arrow { margin-left: auto; color: var(--electric); opacity: 0.6; }
+
+/* ── EDITOR ── */
+.editor-view { max-width: 820px; }
+.editor-toprow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+.editor-toprow h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+.eacts { display: flex; gap: 8px; flex-wrap: wrap; }
+.e-btn { padding: 9px 20px; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; border: none; white-space: nowrap; }
+.e-save { background: var(--electric); color: var(--void); }
+.e-save:hover { background: #fff; }
+.e-preview { background: rgba(0,212,255,0.1); color: var(--electric); border: 1px solid var(--border); }
+.e-preview:hover { background: rgba(0,212,255,0.18); }
+.e-delete { background: rgba(255,68,102,0.08); color: var(--error); border: 1px solid rgba(255,68,102,0.2); }
+.e-delete:hover { background: rgba(255,68,102,0.16); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.fg { margin-bottom: 16px; }
+.fg label { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; font-weight: 500; }
+.fg input, .fg select, .fg textarea {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 4px; padding: 12px 14px; color: var(--white);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--electric); }
+.fg input::placeholder, .fg textarea::placeholder { color: var(--muted); }
+.fg select option { background: var(--deep); }
+.fg textarea { resize: vertical; line-height: 1.6; }
+.char-hint { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
+
+.toolbar { display: flex; gap: 6px; padding: 10px 14px; border: 1px solid var(--border); border-bottom: none; border-radius: 4px 4px 0 0; background: rgba(0,212,255,0.03); flex-wrap: wrap; }
+.tb-btn { padding: 5px 11px; border: 1px solid var(--border); border-radius: 3px; background: transparent; color: var(--muted); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: monospace; }
+.tb-btn:hover { border-color: var(--electric); color: var(--electric); background: rgba(0,212,255,0.05); }
+#bodyArea {
+  width: 100%; min-height: 380px; background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border); border-radius: 0 0 4px 4px;
+  padding: 18px; color: var(--white); font-family: 'DM Sans', sans-serif;
+  font-size: 15px; line-height: 1.8; outline: none; resize: vertical; transition: border-color 0.3s;
+}
+#bodyArea:focus { border-color: var(--electric); }
+
+.status-bar { display: none; align-items: center; gap: 10px; padding: 13px 18px; border-radius: 4px; margin-top: 16px; font-size: 14px; }
+.status-bar.loading { display: flex; background: rgba(0,212,255,0.07); border: 1px solid var(--border); color: var(--electric); }
+.status-bar.success { display: flex; background: rgba(0,255,136,0.07); border: 1px solid rgba(0,255,136,0.2); color: var(--success); }
+.status-bar.error { display: flex; background: rgba(255,68,102,0.07); border: 1px solid rgba(255,68,102,0.2); color: var(--error); }
+
+/* ── PREVIEW ── */
+.preview-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: var(--void); overflow-y: auto; }
+.preview-overlay.open { display: block; }
+.prev-bar { position: sticky; top: 0; background: rgba(2,4,8,0.96); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+.prev-bar h4 { font-family: 'Syne', sans-serif; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.prev-bar h4 span { color: var(--electric); }
+.prev-close { padding: 8px 20px; background: var(--electric); color: var(--void); border: none; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+.prev-content { max-width: 740px; margin: 0 auto; padding: 60px 32px; }
+.prev-tag { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--electric); margin-bottom: 12px; }
+.prev-title { font-family: 'Syne', sans-serif; font-size: 46px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.02em; }
+.prev-intro { font-size: 18px; color: var(--muted); line-height: 1.7; padding: 18px 0 18px 20px; border-left: 2px solid var(--electric); margin-bottom: 40px; }
+.prev-body { font-size: 16px; line-height: 1.8; color: rgba(232,244,255,0.85); }
+.prev-body h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin: 48px 0 20px; color: var(--white); }
+.prev-body h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 600; margin: 36px 0 16px; color: var(--electric); }
+.prev-body p { margin-bottom: 20px; }
+.prev-body strong { color: var(--white); }
+.prev-body ul, .prev-body ol { padding-left: 24px; margin-bottom: 20px; }
+.prev-body li { margin-bottom: 8px; }
+.prev-body blockquote { border-left: 2px solid var(--electric); padding: 16px 24px; margin: 24px 0; background: rgba(0,212,255,0.04); border-radius: 0 4px 4px 0; color: var(--muted); font-style: italic; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 28px; right: 28px; padding: 14px 22px; border-radius: 4px; font-size: 14px; font-weight: 500; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.35s ease; pointer-events: none; max-width: 320px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: rgba(0,255,136,0.12); border: 1px solid rgba(0,255,136,0.35); color: var(--success); }
+.toast.error { background: rgba(255,68,102,0.12); border: 1px solid rgba(255,68,102,0.35); color: var(--error); }
+.toast.info { background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.35); color: var(--electric); }
+.toast.warn { background: rgba(255,170,0,0.12); border: 1px solid rgba(255,170,0,0.35); color: var(--warn); }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(0,212,255,0.2); border-top-color: var(--electric); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 800px) {
+  .dash-body { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .main-panel { padding: 24px; max-height: none; }
+  .form-grid { grid-template-columns: 1fr; }
+  .stats-row { flex-direction: column; }
+  .topbar { padding: 0 16px; }
+  .prev-title { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- PREVIEW -->
+<div class="preview-overlay" id="prevOverlay">
+  <div class="prev-bar">
+    <h4>Article <span>Preview</span></h4>
+    <button class="prev-close" onclick="closePreview()">✕ Close</button>
+  </div>
+  <div class="prev-content">
+    <div class="prev-tag" id="prevTag"></div>
+    <div class="prev-title" id="prevTitle"></div>
+    <div class="prev-intro" id="prevIntro"></div>
+    <div class="prev-body" id="prevBody"></div>
+  </div>
+</div>
+
+<!-- ══ LOCKOUT SCREEN ══ -->
+<div class="screen" id="lockoutScreen">
+  <div class="lockout-box">
+    <div class="lockout-icon">🔒</div>
+    <h2>Access Locked</h2>
+    <p>Too many failed login attempts. Access is temporarily suspended for security. Please try again after the timer expires.</p>
+    <div class="lockout-timer" id="lockTimer">15:00</div>
+    <div class="lockout-timer-label">Minutes remaining</div>
+  </div>
+</div>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="screen active" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="https://i.ibb.co/5hyxn26G/50212-666-375.png" alt="SMI">
+      <div class="login-logo-text">Shine Masters<span>Content Portal</span></div>
+    </div>
+    <h2>Secure Login</h2>
+    <p class="sub">Authorised personnel only. All access attempts are logged.</p>
+
+    <!-- Attempt indicator dots -->
+    <div class="attempt-bar" id="attemptBar">
+      <div class="attempt-dot" id="d0"></div>
+      <div class="attempt-dot" id="d1"></div>
+      <div class="attempt-dot" id="d2"></div>
+      <div class="attempt-dot" id="d3"></div>
+      <div class="attempt-dot" id="d4"></div>
+    </div>
+
+    <div class="error-msg" id="loginErr"></div>
+
+    <!-- STEP 1: Credentials -->
+    <div id="step1">
+      <div class="field-group">
+        <label>GitHub Username</label>
+        <input type="text" id="ghUser" placeholder="your-github-username" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label>Access Token</label>
+        <input type="password" id="ghTok" placeholder="ghp_••••••••••••••••••••" autocomplete="current-password">
+      </div>
+      <div class="field-group">
+        <label>Repository</label>
+        <input type="text" id="ghRep" placeholder="smi-website" value="smi-website" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="step1Btn" onclick="verifyCredentials()">Continue →</button>
+    </div>
+
+    <!-- STEP 2: PIN (shown after credentials pass) -->
+    <div id="step2" style="display:none;">
+      <p class="sub" style="margin-bottom:20px;">Enter your 4-digit security PIN to complete login.</p>
+      <div class="pin-row">
+        <input class="pin-digit" id="p0" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinInput(0)" onkeydown="pinKey(event,0)">
+        <input class="pin-digit" id="p1" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinInput(1)" onkeydown="pinKey(event,1)">
+        <input class="pin-digit" id="p2" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinInput(2)" onkeydown="pinKey(event,2)">
+        <input class="pin-digit" id="p3" type="password" maxlength="1" inputmode="numeric" pattern="[0-9]" oninput="pinInput(3)" onkeydown="pinKey(event,3)">
+      </div>
+      <button class="btn btn-primary" id="step2Btn" onclick="verifyPin()" style="margin-top:20px;">Login →</button>
+      <button class="btn btn-ghost" onclick="backToStep1()">← Back</button>
+      <div class="info-msg">
+        <strong style="color:var(--electric);">First time?</strong> Your PIN is set in the editor settings. Default is <strong>1234</strong> — change it immediately after first login.
+      </div>
+    </div>
+
+    <div class="setup-toggle" onclick="toggleSetup()">How do I get an Access Token? ▾</div>
+    <div class="setup-box" id="setupBox">
+      <div class="setup-step"><span class="sn">1</span><span>Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong></span></div>
+      <div class="setup-step"><span class="sn">2</span><span>Click <strong>"Generate new token (classic)"</strong> — name it "SMI Portal"</span></div>
+      <div class="setup-step"><span class="sn">3</span><span>Tick only the <strong>"repo"</strong> checkbox — nothing else</span></div>
+      <div class="setup-step"><span class="sn">4</span><span>Set expiration to <strong>90 days</strong> and click Generate</span></div>
+      <div class="setup-step"><span class="sn">5</span><span>Copy the token (starts with <strong>ghp_</strong>) and paste it above</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="screen" id="dashScreen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="https://i.ibb.co/5hyxn26G/50212-666-375.png" alt="SMI">
+      <div class="topbar-title">SMI <span>Content Portal</span></div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="topUser"></span>
+      <button class="t-btn t-new" onclick="newArticle()">+ New Article</button>
+      <button class="t-btn t-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="sidebar">
+      <div class="sidebar-label">Articles (<span id="artCount">0</span>)</div>
+      <div class="article-list" id="artList"></div>
+    </div>
+    <div class="main-panel" id="mainPanel">
+
+      <!-- WELCOME -->
+      <div class="welcome-view" id="welcomeView">
+        <h2>Welcome back, <span id="wName">Editor</span></h2>
+        <p class="wsub">Your SMI content command centre. Write and publish blog articles, preview them live, and manage your content — all without touching any code.</p>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-num" id="sArticles">0</div><div class="stat-lbl">Articles</div></div>
+          <div class="stat-box"><div class="stat-num">8</div><div class="stat-lbl">Products</div></div>
+          <div class="stat-box"><div class="stat-num">6</div><div class="stat-lbl">Categories</div></div>
+        </div>
+        <div class="quick-links">
+          <a class="ql" onclick="newArticle()">
+            <div class="ql-icon">✍️</div>
+            <div class="ql-text"><strong>Write New Article</strong><span>Start a fresh blog post</span></div>
+            <div class="ql-arrow">→</div>
+          </a>
+          <a class="ql" href="https://shinemastersind23-del.github.io/shinemasters-in/blog.html" target="_blank">
+            <div class="ql-icon">🌐</div>
+            <div class="ql-text"><strong>View Live Blog</strong><span>See your blog as visitors see it</span></div>
+            <div class="ql-arrow">↗</div>
+          </a>
+          <a class="ql" href="https://shinemastersind23-del.github.io/shinemasters-in" target="_blank">
+            <div class="ql-icon">🏠</div>
+            <div class="ql-text"><strong>View Live Website</strong><span>Open the main SMI website</span></div>
+            <div class="ql-arrow">↗</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- EDITOR -->
+      <div class="editor-view" id="editorView" style="display:none;">
+        <div class="editor-toprow">
+          <h2 id="edTitle">New Article</h2>
+          <div class="eacts">
+            <button class="e-btn e-preview" onclick="showPreview()">👁 Preview</button>
+            <button class="e-btn e-delete" id="delBtn" onclick="deleteArticle()" style="display:none;">🗑 Delete</button>
+            <button class="e-btn e-save" onclick="saveArticle()"><span id="saveTxt">💾 Save & Publish</span></button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg" style="grid-column:1/-1;">
+            <label>Article Title *</label>
+            <input type="text" id="fTitle" placeholder="e.g. Why Rubber Seals Fail in Extreme Heat — And How to Prevent It">
+          </div>
+          <div class="fg">
+            <label>Category *</label>
+            <select id="fCat" onchange="syncCatLabel()">
+              <option value="bus-body">Bus Body Manufacturing</option>
+              <option value="container">Container Logistics</option>
+              <option value="procurement">Procurement Strategy</option>
+              <option value="rubber">Rubber & PVC</option>
+              <option value="automotive">Automotive</option>
+              <option value="ev">EV & Future Tech</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Category Display Name *</label>
+            <input type="text" id="fCatLabel" placeholder="e.g. Bus Body Manufacturing">
+          </div>
+          <div class="fg">
+            <label>Card Emoji</label>
+            <input type="text" id="fIcon" placeholder="🚌" value="🏭" maxlength="4">
+          </div>
+          <div class="fg">
+            <label>Read Time</label>
+            <input type="text" id="fReadTime" placeholder="5 min read" value="5 min read">
+          </div>
+          <div class="fg" style="grid-column:1/-1;">
+            <label>Short Description (shown on blog listing) *</label>
+            <textarea id="fDesc" rows="2" placeholder="1-2 compelling sentences for the blog card..." oninput="chCount(this,'dCount')"></textarea>
+            <div class="char-hint"><span id="dCount">0</span>/160 recommended</div>
+          </div>
+          <div class="fg" style="grid-column:1/-1;">
+            <label>Introduction Paragraph *</label>
+            <textarea id="fIntro" rows="3" placeholder="A strong 2-3 sentence hook shown at the top of the article..."></textarea>
+          </div>
+        </div>
+
+        <div class="fg">
+          <label>Article Body *</label>
+          <div class="toolbar">
+            <button class="tb-btn" onclick="md('## ','')">H2</button>
+            <button class="tb-btn" onclick="md('### ','')">H3</button>
+            <button class="tb-btn" onclick="md('**','**')"><strong>B</strong></button>
+            <button class="tb-btn" onclick="md('*','*')"><em>I</em></button>
+            <button class="tb-btn" onclick="md('\n- ','')">• List</button>
+            <button class="tb-btn" onclick="md('\n> ','')">❝ Quote</button>
+            <button class="tb-btn" onclick="md('\n---\n','')">— Line</button>
+            <button class="tb-btn" onclick="md('[Link text](',')')">🔗 Link</button>
+          </div>
+          <textarea id="bodyArea" placeholder="Write your full article here...&#10;&#10;## Use double hash for section headings&#10;**wrap in stars for bold**&#10;- dash for bullet points&#10;> greater-than for quotes"></textarea>
+        </div>
+
+        <div class="status-bar" id="statusBar"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SECURITY CONFIG
+// ══════════════════════════════════════════
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
+const DEFAULT_PIN = '1234'; // Users should change this
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let GH_TOKEN = '', GH_USER = '', GH_REPO = '';
+let articles = [], currentIdx = null;
+let tempCredentials = null; // Stored between step1 and step2
+
+// ══════════════════════════════════════════
+// SECURITY — LOCKOUT SYSTEM
+// ══════════════════════════════════════════
+function getAttempts() {
+  const data = localStorage.getItem('smi_sec');
+  if (!data) return { count: 0, lockedUntil: null };
+  return JSON.parse(data);
+}
+
+function saveAttempts(data) {
+  localStorage.setItem('smi_sec', JSON.stringify(data));
+}
+
+function recordFailedAttempt() {
+  const sec = getAttempts();
+  sec.count = (sec.count || 0) + 1;
+  if (sec.count >= MAX_ATTEMPTS) {
+    sec.lockedUntil = Date.now() + (LOCKOUT_MINUTES * 60 * 1000);
+  }
+  saveAttempts(sec);
+  updateAttemptDots(sec.count);
+  return sec;
+}
+
+function clearAttempts() {
+  localStorage.removeItem('smi_sec');
+  updateAttemptDots(0);
+}
+
+function isLocked() {
+  const sec = getAttempts();
+  if (sec.lockedUntil && Date.now() < sec.lockedUntil) return sec.lockedUntil;
+  if (sec.lockedUntil && Date.now() >= sec.lockedUntil) {
+    clearAttempts();
+  }
+  return false;
+}
+
+function updateAttemptDots(count) {
+  for (let i = 0; i < 5; i++) {
+    const dot = document.getElementById('d' + i);
+    if (!dot) continue;
+    dot.className = 'attempt-dot';
+    if (i < count) {
+      dot.classList.add(count >= MAX_ATTEMPTS - 1 ? 'warn' : 'used');
+    }
+    if (i < count && count >= MAX_ATTEMPTS) dot.classList.add('used');
+  }
+}
+
+function startLockoutTimer(until) {
+  switchScreen('lockoutScreen');
+  const tick = () => {
+    const remaining = Math.max(0, until - Date.now());
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('lockTimer').textContent =
+      `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    if (remaining <= 0) {
+      clearAttempts();
+      switchScreen('loginScreen');
+    } else {
+      setTimeout(tick, 1000);
+    }
+  };
+  tick();
+}
+
+// ══════════════════════════════════════════
+// AUTH — STEP 1: CREDENTIALS
+// ══════════════════════════════════════════
+async function verifyCredentials() {
+  const lockedUntil = isLocked();
+  if (lockedUntil) { startLockoutTimer(lockedUntil); return; }
+
+  const user = document.getElementById('ghUser').value.trim();
+  const tok = document.getElementById('ghTok').value.trim();
+  const repo = document.getElementById('ghRep').value.trim();
+  const errEl = document.getElementById('loginErr');
+  const btn = document.getElementById('step1Btn');
+
+  errEl.classList.remove('show');
+  if (!user || !tok || !repo) {
+    showLoginErr('Please fill in all fields.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+
+  try {
+    const res = await ghFetch(`https://api.github.com/repos/${user}/${repo}`, tok);
+    if (!res.ok) {
+      const sec = recordFailedAttempt();
+      const remaining = MAX_ATTEMPTS - sec.count;
+      if (sec.lockedUntil) {
+        startLockoutTimer(sec.lockedUntil);
+        return;
+      }
+      throw new Error(res.status === 401
+        ? `Invalid token. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining before lockout.`
+        : `Repository "${repo}" not found. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`
+      );
+    }
+    // Credentials valid — move to PIN step
+    tempCredentials = { user, tok, repo };
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('p0').focus();
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
+  } catch(e) {
+    showLoginErr(e.message);
+    btn.disabled = false;
+    btn.textContent = 'Continue →';
+  }
+}
+
+// ══════════════════════════════════════════
+// AUTH — STEP 2: PIN
+// ══════════════════════════════════════════
+function pinInput(idx) {
+  const val = document.getElementById('p'+idx).value;
+  if (val && idx < 3) document.getElementById('p'+(idx+1)).focus();
+  if (idx === 3 && val) verifyPin();
+}
+
+function pinKey(e, idx) {
+  if (e.key === 'Backspace' && !document.getElementById('p'+idx).value && idx > 0) {
+    document.getElementById('p'+(idx-1)).focus();
+  }
+}
+
+async function verifyPin() {
+  const pin = [0,1,2,3].map(i => document.getElementById('p'+i).value).join('');
+  const storedPin = localStorage.getItem('smi_pin') || DEFAULT_PIN;
+
+  if (pin !== storedPin) {
+    const sec = recordFailedAttempt();
+    const remaining = MAX_ATTEMPTS - sec.count;
+    if (sec.lockedUntil) {
+      startLockoutTimer(sec.lockedUntil);
+      return;
+    }
+    [0,1,2,3].forEach(i => {
+      const el = document.getElementById('p'+i);
+      el.value = '';
+      el.classList.add('err');
+      setTimeout(() => el.classList.remove('err'), 600);
+    });
+    document.getElementById('p0').focus();
+    showLoginErr(`Incorrect PIN. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`);
+    toast(`Wrong PIN — ${remaining} attempt${remaining!==1?'s':''} left`, 'warn');
+    return;
+  }
+
+  // PIN correct — log in
+  clearAttempts();
+  GH_TOKEN = tempCredentials.tok;
+  GH_USER = tempCredentials.user;
+  GH_REPO = tempCredentials.repo;
+  tempCredentials = null;
+
+  sessionStorage.setItem('smi_t', GH_TOKEN);
+  sessionStorage.setItem('smi_u', GH_USER);
+  sessionStorage.setItem('smi_r', GH_REPO);
+
+  document.getElementById('step2Btn').textContent = 'Loading...';
+  await loadArticles();
+  showDash();
+}
+
+function backToStep1() {
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('loginErr').classList.remove('show');
+  [0,1,2,3].forEach(i => document.getElementById('p'+i).value = '');
+  tempCredentials = null;
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('loginErr');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function toggleSetup() {
+  document.getElementById('setupBox').classList.toggle('open');
+}
+
+function logout() {
+  sessionStorage.clear();
+  GH_TOKEN = GH_USER = GH_REPO = '';
+  articles = []; currentIdx = null; tempCredentials = null;
+  // Reset form
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+  [0,1,2,3].forEach(i => document.getElementById('p'+i).value = '');
+  document.getElementById('loginErr').classList.remove('show');
+  switchScreen('loginScreen');
+  toast('Logged out', 'info');
+}
+
+// ══════════════════════════════════════════
+// GITHUB API
+// ══════════════════════════════════════════
+function ghFetch(url, tok, opts = {}) {
+  return fetch(url, {
+    ...opts,
+    headers: {
+      'Authorization': `token ${tok || GH_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers || {})
+    }
+  });
+}
+
+async function loadArticles() {
+  articles = [];
+  try {
+    const res = await ghFetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/_posts`);
+    if (res.status === 404) return;
+    const files = await res.json();
+    if (!Array.isArray(files)) return;
+    for (const f of files.filter(f => f.name.endsWith('.json'))) {
+      const fr = await ghFetch(f.url);
+      const fd = await fr.json();
+      const content = JSON.parse(atob(fd.content.replace(/\n/g,'')));
+      articles.push({ ...content, filename: f.name, sha: fd.sha });
+    }
+  } catch(e) { console.warn('Load failed:', e); }
+}
+
+async function saveToGH(filename, content, sha = null) {
+  const body = { message: `${sha ? 'Update' : 'Add'}: ${filename}`, content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))) };
+  if (sha) body.sha = sha;
+  const res = await ghFetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/_posts/${filename}`, GH_TOKEN, { method: 'PUT', body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Save failed'); }
+  return res.json();
+}
+
+async function deleteFromGH(filename, sha) {
+  const res = await ghFetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/_posts/${filename}`, GH_TOKEN, { method: 'DELETE', body: JSON.stringify({ message: `Delete: ${filename}`, sha }) });
+  if (!res.ok) throw new Error('Delete failed');
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function showDash() {
+  switchScreen('dashScreen');
+  document.getElementById('topUser').textContent = `@${GH_USER}`;
+  document.getElementById('wName').textContent = GH_USER;
+  renderSidebar();
+  showWelcome();
+}
+
+function renderSidebar() {
+  const list = document.getElementById('artList');
+  const count = document.getElementById('artCount');
+  const stat = document.getElementById('sArticles');
+  count.textContent = articles.length;
+  stat.textContent = articles.length;
+
+  if (articles.length === 0) {
+    list.innerHTML = `<div class="empty-list"><div class="ei">📝</div><p>No articles yet.<br>Click "+ New Article" to get started.</p></div>`;
+    return;
+  }
+
+  list.innerHTML = articles.map((a, i) => `
+    <div class="art-item ${currentIdx === i ? 'active' : ''}" onclick="editArticle(${i})">
+      <div class="art-title">${escHtml(a.title || 'Untitled')}</div>
+      <div class="art-meta">
+        <span class="art-tag">${escHtml(a.categoryLabel || a.category || '')}</span>
+        <span class="art-date">${escHtml(a.date || '')}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showWelcome() {
+  currentIdx = null;
+  document.getElementById('welcomeView').style.display = 'block';
+  document.getElementById('editorView').style.display = 'none';
+  renderSidebar();
+}
+
+// ══════════════════════════════════════════
+// EDITOR
+// ══════════════════════════════════════════
+const CAT_MAP = {
+  'bus-body':'Bus Body Manufacturing','container':'Container Logistics',
+  'procurement':'Procurement Strategy','rubber':'Rubber & PVC',
+  'automotive':'Automotive','ev':'EV & Future Tech'
+};
+
+function newArticle() {
+  currentIdx = null;
+  document.getElementById('edTitle').textContent = 'New Article';
+  document.getElementById('delBtn').style.display = 'none';
+  clearEditor();
+  showEditor();
+}
+
+function editArticle(i) {
+  currentIdx = i;
+  const a = articles[i];
+  document.getElementById('edTitle').textContent = 'Edit Article';
+  document.getElementById('delBtn').style.display = 'inline-block';
+  document.getElementById('fTitle').value = a.title || '';
+  document.getElementById('fCat').value = a.category || 'bus-body';
+  document.getElementById('fCatLabel').value = a.categoryLabel || '';
+  document.getElementById('fIcon').value = a.icon || '🏭';
+  document.getElementById('fReadTime').value = a.readTime || '5 min read';
+  document.getElementById('fDesc').value = a.desc || '';
+  document.getElementById('fIntro').value = a.intro || '';
+  document.getElementById('bodyArea').value = a.body || '';
+  chCount(document.getElementById('fDesc'), 'dCount');
+  showEditor();
+}
+
+function clearEditor() {
+  ['fTitle','fCatLabel','fDesc','fIntro','bodyArea'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fCat').value = 'bus-body';
+  document.getElementById('fIcon').value = '🏭';
+  document.getElementById('fReadTime').value = '5 min read';
+  document.getElementById('dCount').textContent = '0';
+}
+
+function showEditor() {
+  document.getElementById('welcomeView').style.display = 'none';
+  document.getElementById('editorView').style.display = 'block';
+  document.getElementById('statusBar').style.display = 'none';
+  renderSidebar();
+  document.getElementById('fTitle').focus();
+}
+
+function syncCatLabel() {
+  const lbl = document.getElementById('fCatLabel');
+  const val = document.getElementById('fCat').value;
+  if (!lbl.value || Object.values(CAT_MAP).includes(lbl.value)) {
+    lbl.value = CAT_MAP[val] || '';
+  }
+}
+
+function chCount(el, id) {
+  document.getElementById(id).textContent = el.value.length;
+}
+
+function md(before, after) {
+  const ta = document.getElementById('bodyArea');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.substring(s, e);
+  ta.value = ta.value.substring(0, s) + before + sel + after + ta.value.substring(e);
+  ta.focus();
+  ta.selectionStart = s + before.length;
+  ta.selectionEnd = s + before.length + sel.length;
+}
+
+async function saveArticle() {
+  const title = document.getElementById('fTitle').value.trim();
+  const category = document.getElementById('fCat').value;
+  const categoryLabel = document.getElementById('fCatLabel').value.trim();
+  const icon = document.getElementById('fIcon').value.trim();
+  const readTime = document.getElementById('fReadTime').value.trim();
+  const desc = document.getElementById('fDesc').value.trim();
+  const intro = document.getElementById('fIntro').value.trim();
+  const body = document.getElementById('bodyArea').value.trim();
+
+  if (!title || !desc || !intro || !body) {
+    toast('Please fill in Title, Description, Introduction and Body', 'error');
+    return;
+  }
+
+  const sb = document.getElementById('statusBar');
+  const btn = document.getElementById('saveTxt');
+  sb.className = 'status-bar loading';
+  sb.innerHTML = '<span class="spinner"></span> &nbsp;Saving to GitHub...';
+  sb.style.display = 'flex';
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    const filename = currentIdx !== null ? articles[currentIdx].filename : `${slug}.json`;
+    const sha = currentIdx !== null ? articles[currentIdx].sha : null;
+    const date = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    const content = { title, category, categoryLabel, icon, readTime, desc, intro, body, date, slug };
+    const result = await saveToGH(filename, content, sha);
+    const saved = { ...content, filename, sha: result.content.sha };
+
+    if (currentIdx !== null) {
+      articles[currentIdx] = saved;
+    } else {
+      articles.unshift(saved);
+      currentIdx = 0;
+      document.getElementById('edTitle').textContent = 'Edit Article';
+      document.getElementById('delBtn').style.display = 'inline-block';
+    }
+
+    sb.className = 'status-bar success';
+    sb.innerHTML = '✅ &nbsp;Saved! Netlify will redeploy your site in ~30 seconds.';
+    toast('Article published!', 'success');
+    renderSidebar();
+  } catch(e) {
+    sb.className = 'status-bar error';
+    sb.innerHTML = `❌ &nbsp;Error: ${escHtml(e.message)}`;
+    toast('Save failed — ' + e.message, 'error');
+  }
+  btn.textContent = '💾 Save & Publish';
+}
+
+async function deleteArticle() {
+  if (currentIdx === null) return;
+  const a = articles[currentIdx];
+  if (!confirm(`Permanently delete "${a.title}"? This cannot be undone.`)) return;
+  document.getElementById('saveTxt').innerHTML = '<span class="spinner"></span>';
+  try {
+    await deleteFromGH(a.filename, a.sha);
+    articles.splice(currentIdx, 1);
+    toast('Article deleted', 'info');
+    showWelcome();
+  } catch(e) {
+    toast('Delete failed — ' + e.message, 'error');
+    document.getElementById('saveTxt').textContent = '💾 Save & Publish';
+  }
+}
+
+// ══════════════════════════════════════════
+// PREVIEW
+// ══════════════════════════════════════════
+function showPreview() {
+  document.getElementById('prevTag').textContent = document.getElementById('fCatLabel').value || '';
+  document.getElementById('prevTitle').textContent = document.getElementById('fTitle').value || 'Article Title';
+  document.getElementById('prevIntro').textContent = document.getElementById('fIntro').value || '';
+  document.getElementById('prevBody').innerHTML = renderMd(document.getElementById('bodyArea').value || '');
+  document.getElementById('prevOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+  document.getElementById('prevOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderMd(t) {
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^&gt; (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/^(?!<[hbul]).+$/gm, p => p.trim() ? `<p>${p}</p>` : '')
+    .replace(/---/g,'<hr style="border:none;border-top:1px solid rgba(0,212,255,0.15);margin:32px 0;">');
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+(async function init() {
+  // Check lockout first
+  const locked = isLocked();
+  if (locked) { startLockoutTimer(locked); return; }
+
+  // Update attempt dots
+  const sec = getAttempts();
+  updateAttemptDots(sec.count || 0);
+
+  // Check session
+  const t = sessionStorage.getItem('smi_t');
+  const u = sessionStorage.getItem('smi_u');
+  const r = sessionStorage.getItem('smi_r');
+  if (t && u && r) {
+    GH_TOKEN = t; GH_USER = u; GH_REPO = r;
+    document.getElementById('ghUser').value = u;
+    document.getElementById('ghRep').value = r;
+    try {
+      await loadArticles();
+      showDash();
+    } catch(e) {
+      sessionStorage.clear();
+    }
+  }
+})();
+</script>
+</body>
+</html>
